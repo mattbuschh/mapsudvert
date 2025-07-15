@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carte Sudvert</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5dc;
+        }
+
+        #map {
+            width: 100%;
+            height: 100vh;
+            min-height: 400px;
+        }
+
+        .custom-popup {
+            text-align: center;
+            padding: 10px;
+        }
+
+        .custom-popup h3 {
+            color: #2d5a2d;
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .custom-popup p {
+            color: #4a4a4a;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        .leaflet-popup-content-wrapper {
+            background-color: #fefef8;
+            border: 2px solid #2d5a2d;
+            border-radius: 8px;
+        }
+
+        .leaflet-popup-tip {
+            background-color: #fefef8;
+            border: 2px solid #2d5a2d;
+        }
+
+        .leaflet-control-attribution {
+            background-color: rgba(245, 245, 220, 0.9) !important;
+            font-size: 10px;
+        }
+
+        .leaflet-control-zoom {
+            background-color: #2d5a2d;
+            border-radius: 6px;
+        }
+
+        .leaflet-control-zoom a {
+            background-color: #2d5a2d;
+            color: white;
+            border: none;
+        }
+
+        .leaflet-control-zoom a:hover {
+            background-color: #1a3d1a;
+        }
+
+        /* Texte SEO indexable */
+        .seo-content {
+            position: absolute;
+            left: -9999px;
+            top: -9999px;
+            font-size: 1px;
+            color: transparent;
+        }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+    
+    <!-- Contenu SEO indexable -->
+    <div class="seo-content">
+        <h1>Zones d'intervention SudVert Paysagiste</h1>
+        <p>SudVert, entreprise de paysagisme en Lorraine, intervient dans les communes suivantes :</p>
+        <ul>
+            <li>Arlon - Sudvert intervient dans cette commune et ses villages</li>
+            <li>Virton - Sudvert intervient dans cette commune et ses villages</li>
+            <li>Messancy - Sudvert intervient dans cette commune et ses villages</li>
+            <li>Habay - Sudvert intervient dans cette commune et ses villages</li>
+            <li>Martelange - Sudvert intervient dans cette commune et ses villages</li>
+            <li>Chiny - Sudvert intervient dans cette commune et ses villages</li>
+            <li>Aubange - Sudvert intervient dans cette commune et ses villages</li>
+            <li>Étalle - Sudvert intervient dans cette commune et ses villages</li>
+            <li>Léglise - Sudvert intervient dans cette commune et ses villages</li>
+            <li>Meix-devant-Virton - Sudvert intervient dans cette commune et ses villages</li>
+            <li>Libramont-Chevigny - Sudvert intervient dans cette commune et ses villages</li>
+            <li>Fauvillers - Sudvert intervient dans cette commune et ses villages</li>
+            <li>Herbeumont - Sudvert intervient dans cette commune et ses villages</li>
+            <li>Saint-Léger - Sudvert intervient dans cette commune et ses villages</li>
+            <li>Musson - Sudvert intervient dans cette commune et ses villages</li>
+            <li>Attert - Sudvert intervient dans cette commune et ses villages</li>
+        </ul>
+        <p>Services de paysagisme, aménagement extérieur, entretien espaces verts en Lorraine.</p>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        // Initialisation de la carte
+        const map = L.map('map').setView([49.68, 5.82], 9);
+
+        // Tuiles de carte
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap',
+            maxZoom: 18
+        }).addTo(map);
+
+        // Icône personnalisée verte
+        const greenIcon = L.divIcon({
+            className: 'custom-marker',
+            html: `
+                <div style="
+                    background-color: #2d5a2d;
+                    width: 20px;
+                    height: 20px;
+                    border-radius: 50%;
+                    border: 2px solid #4a7c4a;
+                    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+                    position: relative;
+                ">
+                    <div style="
+                        position: absolute;
+                        top: 50%;
+                        left: 50%;
+                        transform: translate(-50%, -50%);
+                        width: 6px;
+                        height: 6px;
+                        background-color: #90EE90;
+                        border-radius: 50%;
+                    "></div>
+                </div>
+            `,
+            iconSize: [20, 20],
+            iconAnchor: [10, 10],
+            popupAnchor: [0, -10]
+        });
+
+        // Données des communes
+        const communes = [
+            { name: "Arlon", lat: 49.6833, lng: 5.8167 },
+            { name: "Virton", lat: 49.5667, lng: 5.5333 },
+            { name: "Messancy", lat: 49.6000, lng: 5.8167 },
+            { name: "Habay", lat: 49.7167, lng: 5.6333 },
+            { name: "Martelange", lat: 49.8333, lng: 5.7333 },
+            { name: "Chiny", lat: 49.7333, lng: 5.3333 },
+            { name: "Aubange", lat: 49.5667, lng: 5.8000 },
+            { name: "Étalle", lat: 49.6833, lng: 5.6000 },
+            { name: "Léglise", lat: 49.7833, lng: 5.4833 },
+            { name: "Meix-devant-Virton", lat: 49.5333, lng: 5.4833 },
+            { name: "Libramont-Chevigny", lat: 49.9167, lng: 5.3833 },
+            { name: "Fauvillers", lat: 49.8500, lng: 5.5167 },
+            { name: "Herbeumont", lat: 49.7833, lng: 5.2333 },
+            { name: "Saint-Léger", lat: 49.7000, lng: 5.1833 },
+            { name: "Musson", lat: 49.5500, lng: 5.7167 },
+            { name: "Attert", lat: 49.7500, lng: 5.7833 }
+        ];
+
+        // Ajout des marqueurs
+        const markers = [];
+        communes.forEach(commune => {
+            const marker = L.marker([commune.lat, commune.lng], { icon: greenIcon })
+                .addTo(map)
+                .bindPopup(`
+                    <div class="custom-popup">
+                        <h3>${commune.name}</h3>
+                        <p>Sudvert intervient dans cette commune et ses villages.</p>
+                    </div>
+                `);
+            markers.push(marker);
+        });
+
+        // Ajustement de la vue
+        const group = new L.featureGroup(markers);
+        map.fitBounds(group.getBounds().pad(0.1));
+    </script>
+</body>
+</html>
